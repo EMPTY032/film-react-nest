@@ -5,42 +5,54 @@ import {
 } from '@nestjs/common';
 import { CreateOrderDTO } from './dto/order.dto';
 import { FilmRepository } from '../repository/film.repository';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Film } from '../films/entity/film.entity';
+import { Repository } from 'typeorm';
+import { Schedule } from '../films/entity/schedule.entity';
 
 @Injectable()
 export class OrderService {
-  constructor(private filmRepository: FilmRepository) {}
+  constructor(
+    @InjectRepository(Film) private filmRepository: Repository<Film>,
+    @InjectRepository(Schedule)
+    private scheduleRepository: Repository<Schedule>,
+  ) {}
 
   async createOrder(tickets: CreateOrderDTO[]) {
     const seatsSet = new Set();
 
     for (const ticket of tickets) {
-      const film = await this.filmRepository.findById(ticket.film);
+      const film = await this.filmRepository.findOne({
+        where: { id: ticket.film },
+      });
 
       if (!film) {
         throw new NotFoundException(`Фильм ${ticket.film} не найден`);
       }
 
-      const session = film.schedule.find((s) => s.id === ticket.session);
+      const session = await this.scheduleRepository.findOne({
+        where: { id: ticket.session },
+      });
 
       if (!session) {
         throw new NotFoundException(`Сеанс ${ticket.session} не найден`);
       }
-
-      session.taken = session.taken || [];
       const newSeat = `${ticket.row}:${ticket.seat}`;
-
-      if (session.taken.includes(newSeat)) {
-        throw new Error(`Место ${newSeat} занято`);
-      }
 
       if (seatsSet.has(newSeat)) {
         throw new BadRequestException('Duplicate seats in request');
       }
 
       seatsSet.add(newSeat);
+
+      session.taken = session.taken || [];
+
+      if (session.taken.includes(newSeat)) {
+        throw new Error(`Место ${newSeat} занято`);
+      }
+
       session.taken.push(newSeat);
 
-      film.markModified('schedule');
       await this.filmRepository.save(film);
     }
 
