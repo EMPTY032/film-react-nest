@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
+@Schema()
 export class Schedule {
   @Prop({ required: true })
   id: string;
@@ -29,7 +30,7 @@ export type FilmDocument = Film & Document;
 @Schema()
 export class Film {
   @Prop({ required: true })
-  id: string;
+  id: string; //в предоставленных фильмах в папке tes указанно доп свойсто id(не _id), поэтому в схеме так
 
   @Prop()
   rating: number;
