@@ -4,11 +4,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateOrderDTO } from './dto/order.dto';
-import { FilmRepository } from '../repository/film.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Film } from '../films/entity/film.entity';
+import { Film } from '../films/repository/entity/film.entity';
 import { Repository } from 'typeorm';
-import { Schedule } from '../films/entity/schedule.entity';
+import { Schedule } from '../films/repository/entity/schedule.entity';
 
 @Injectable()
 export class OrderService {
