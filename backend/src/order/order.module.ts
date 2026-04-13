@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { OrderController } from './order.controller';
 import { OrderService } from './order.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Film } from '../films/repository/entity/film.entity';
-import { Schedule } from '../films/repository/entity/schedule.entity';
+import { Film } from '../repository/entity/film.entity';
+import { Schedule } from '../repository/entity/schedule.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Film, Schedule])],

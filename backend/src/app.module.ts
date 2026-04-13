@@ -7,14 +7,20 @@ import { AppConfig, configProvider } from './app.config.provider';
 import { FilmsModule } from './films/films.module';
 import { OrderModule } from './order/order.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { appConfigModule } from './config.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      cache: true,
+    }),
+    appConfigModule,
     TypeOrmModule.forRootAsync({
+      imports: [appConfigModule],
       inject: ['CONFIG'],
       useFactory: (config: AppConfig) => ({
         type: config.database.driver as 'postgres',
-        url: config.database.url,
         username: config.database.username,
         password: config.database.password,
         port: Number(config.database.dbport),
@@ -22,10 +28,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         autoLoadEntities: true,
         synchronize: true,
       }),
-    }),
-    ConfigModule.forRoot({
-      isGlobal: true,
-      cache: true,
     }),
     FilmsModule,
     OrderModule,

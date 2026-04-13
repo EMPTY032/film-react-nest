@@ -2,7 +2,7 @@ import * as process from 'node:process';
 
 export const configProvider = {
   provide: 'CONFIG',
-  useValue: <AppConfig>{
+  useFactory: (): AppConfig => ({
     database: {
       driver: process.env.DATABASE_DRIVER ?? 'postgres',
       url: process.env.DATABASE_URL ?? 'postgres:///',
@@ -11,7 +11,7 @@ export const configProvider = {
       dbname: process.env.DATABASE_NAME,
       dbport: process.env.DATABASE_PORT,
     },
-  },
+  }),
 };
 
 export interface AppConfig {

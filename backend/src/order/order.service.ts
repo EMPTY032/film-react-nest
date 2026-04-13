@@ -1,13 +1,14 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { CreateOrderDTO } from './dto/order.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Film } from '../films/repository/entity/film.entity';
+import { Film } from '../repository/entity/film.entity';
 import { Repository } from 'typeorm';
-import { Schedule } from '../films/repository/entity/schedule.entity';
+import { Schedule } from '../repository/entity/schedule.entity';
 
 @Injectable()
 export class OrderService {
@@ -47,7 +48,7 @@ export class OrderService {
       session.taken = session.taken || [];
 
       if (session.taken.includes(newSeat)) {
-        throw new Error(`Место ${newSeat} занято`);
+        throw new ConflictException(`Место ${newSeat} занято`);
       }
 
       session.taken.push(newSeat);
