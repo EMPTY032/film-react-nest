@@ -52,7 +52,7 @@ export class OrderService {
 
       session.taken.push(newSeat);
 
-      await this.filmRepository.save(film);
+      await this.scheduleRepository.save(session);
     }
 
     return { success: true };

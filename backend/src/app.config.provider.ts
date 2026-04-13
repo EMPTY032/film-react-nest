@@ -1,4 +1,3 @@
-import { ConfigModule } from '@nestjs/config';
 import * as process from 'node:process';
 
 export const configProvider = {
@@ -9,6 +8,8 @@ export const configProvider = {
       url: process.env.DATABASE_URL ?? 'postgres:///',
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
+      dbname: process.env.DATABASE_NAME,
+      dbport: process.env.DATABASE_PORT,
     },
   },
 };
@@ -22,4 +23,6 @@ export interface AppConfigDatabase {
   url: string;
   username: string;
   password: string;
+  dbname: string;
+  dbport: string;
 }
