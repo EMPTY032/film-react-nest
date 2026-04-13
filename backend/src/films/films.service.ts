@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Film } from '../repository/entity/film.entity';
 import { Repository } from 'typeorm';
@@ -15,7 +15,7 @@ export class FilmsService {
 
   async getFilmById(id) {
     if (!id) {
-      throw new Error('передайте id');
+      throw new BadRequestException('передайте id');
     }
     return this.filmRepository.findOne({
       where: { id: id },
