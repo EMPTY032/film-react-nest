@@ -1,23 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FilmsService } from './films.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Film } from '../repository/entity/film.entity';
 
 describe('FilmsService', () => {
   let service: FilmsService;
-  const mockFilmRepository = {
-    find: jest.fn(),
-    findOne: jest.fn(),
-    save: jest.fn(),
-    remove: jest.fn(),
-  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        FilmsService,
-        { provide: getRepositoryToken(Film), useValue: mockFilmRepository },
-      ],
+      providers: [FilmsService],
     }).compile();
 
     service = module.get<FilmsService>(FilmsService);

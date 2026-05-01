@@ -1,4 +1,32 @@
 services:
+  frontend:
+    build: ./frontend
+    image: ghcr.io/empty032/project-frontend
+    volumes:
+      - frontend_dist:/app/dist
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    image: ghcr.io/empty032/project-backend
+    environment:
+      DATABASE_URL: postgres://exampleuser:examplepass@db:5432/exampledb
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+
+  nginx:
+    build: ./nginx
+    image: ghcr.io/empty032/project-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - frontend_dist:/usr/share/nginx/html
+    depends_on:
+      - backend
+
   db:
     image: postgres:15
     container_name: postgres_container
@@ -11,5 +39,20 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_container
+    ports:
+      - "8080:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@mail.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    depends_on:
+      - db
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
 volumes:
   pgdata:
+  pgadmin_data:
+  frontend_dist:
